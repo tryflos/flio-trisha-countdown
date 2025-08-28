@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Countdown bis 1. August 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #ffc6dc;
+      --panel: #2a2420;
+      --text: #1a0f10;
+      --accent: #5b3a28;
+      --muted: #3d322b;
+      --edge: #7a5f4e;
+      --shadow: rgba(0,0,0,.25);
+      --card-grad-top: #3a312a;
+      --ring-bg: #f6d9e4;
+      --ring-fg: #e2b487;
+    }
+    * { box-sizing: border-box; }
+    body{
+      margin:0; min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+      background: radial-gradient(900px 520px at 50% 20%, #ffd3e6, var(--bg));
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    h1{
+      margin:0; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+      color: var(--accent); opacity:.95; font-size: clamp(16px, 2.6vw, 22px);
+      text-shadow: 0 2px 6px rgba(255,255,255,.6);
+    }
+
+    .clock{ display:flex; align-items:stretch; gap:16px; padding:8px; }
+    .unit{ display:flex; flex-direction:column; align-items:center; gap:10px; }
+    .card{
+      position:relative; width: clamp(90px, 14vw, 150px); height: clamp(78px, 11vw, 110px);
+      background: linear-gradient(var(--card-grad-top), var(--panel));
+      border-radius:16px; border: 1px solid var(--edge);
+      box-shadow: 0 18px 28px var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+      display:flex; align-items:center; justify-content:center; perspective: 1000px; overflow:hidden;
+    }
+    .card::before{
+      content:""; position:absolute; left:0; right:0; top:50%; height:1px;
+      background: rgba(255,255,255,.18); box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset; transform: translateY(-.5px);
+    }
+    .num{
+      font-variant-numeric: tabular-nums lining-nums; font-weight:800;
+      font-size: clamp(40px, 7.4vw, 68px); letter-spacing:.02em; backface-visibility: hidden; color:#fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,.45);
+    }
+    .flip{ animation: flip .7s cubic-bezier(.2,.6,.2,1); }
+    @keyframes flip{ 0%{transform:rotateX(0)} 50%{transform:rotateX(-90deg)} 100%{transform:rotateX(0)} }
+    .label{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); opacity:.95; }
+    .sep{ align-self:center; margin:0 2px; color:#5b3a28; opacity:.55; font-weight:800; font-size:clamp(22px, 4vw, 32px); }
+
+    /* Fortschritt */
+    .progress-wrap{ width:min(860px, 92vw); display:flex; flex-direction:column; gap:10px; }
+    .progress-head{ display:flex; justify-content:space-between; font-size:14px; color:#5b3a28; opacity:.95; font-weight:700;}
+    .bar{ width:100%; height:22px; background:#ffe2ee; border-radius:999px; border:1px solid #e7b9c9; overflow:hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,.08); }
+    .fill{ height:100%; width:0%; background: linear-gradient(180deg, #ffe0b8, #e2b487); color:#1a1a1a; text-align:center; font-size:12px; font-weight:900; line-height:22px; transition: width .2s linear; white-space: nowrap; }
+    .foot{ font-size:12px; color:#6a4633; opacity:.85; }
+
+    /* Corner Cards */
+    .corner{
+      position: fixed; z-index: 5; background: #ffffffcc; color:#1a0f10;
+      border:1px solid #e7b9c9; border-radius:12px; padding:10px 12px; backdrop-filter: blur(4px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size:13px; line-height:1.25;
+    }
+    .corner .title{ font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px; font-size:11px; }
+    .corner.right-top{ top:14px; right:14px; text-align:right; }
+    .corner.left-top{ top:14px; left:14px; }
+    .corner.left-bottom{ bottom:14px; left:14px; }
+    .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
+    .mono{ font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+    /* Circular progress */
+    .ringWrap{ display:flex; align-items:center; gap:10px; }
+    .ring{ width:64px; height:64px; transform: rotate(-90deg); } /* Start oben */
+    .pctText{ font-weight:800; font-size:12px; }
+  </style>
+</head>
+<body>
+  <h1>Verbleibende Zeit</h1>
+
+  <!-- OBEN LINKS: Nächstes Treffen (1. Aug -> 26. Sep) -->
+  <div class="corner left-top" id="meetBox">
+    <div class="title">Nächstes Treffen (26. Sep)</div>
+    <div class="ringWrap">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
+        <circle id="meetArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
+                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
+      </svg>
+      <div>
+        <div class="mono" id="meetLeft">…</div>
+        <div class="mono pctText" id="meetPct">0.000000%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBEN RECHTS: Wochenenden bis Ziel -->
+  <div class="corner right-top">
+    <div class="title">Wochenenden bis zum Ziel</div>
+    <div class="mono" id="weekendsLeft">…</div>
+  </div>
+
+  <!-- UNTEN LINKS: Monate / Gehalt bis Ziel -->
+  <div class="corner left-bottom">
+    <div class="title">Monatsgehälter bis Ziel</div>
+    <div class="mono" id="monthsLeft">…</div>
+  </div>
+
+  <!-- UNTEN RECHTS: Birthday (1. Aug -> 13. Jan) -->
+  <div class="corner right-bottom" id="birthdayBox">
+    <div class="title">Gemeinsamer Birthday (12./13. Jan)</div>
+    <div class="ringWrap">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
+        <circle id="bdayArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
+                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
+      </svg>
+      <div>
+        <div class="mono" id="bdayLeft">…</div>
+        <div class="mono pctText" id="bdayPct">0.000000%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Haupt-Flip-Clock -->
+  <div class="clock" aria-label="Flip Clock Countdown">
+    <div class="unit">
+      <div class="card"><span id="days" class="num">000</span></div>
+      <div class="label">Tage</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="card"><span id="hours" class="num">00</span></div>
+      <div class="label">Stunden</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="card"><span id="minutes" class="num">00</span></div>
+      <div class="label">Minuten</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="card"><span id="seconds" class="num">00</span></div>
+      <div class="label">Sekunden</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-head">
+      <div>Schon geschafft seit dem <strong>01.08.2025</strong></div>
+      <div>Ziel: <strong>01.08.2026</strong></div>
+    </div>
+    <div class="bar" aria-label="Fortschritt">
+      <div id="fill" class="fill">0.000000%</div>
+    </div>
+  </div>
+
+  <div class="foot">Ich liebe dich ❤️ Je t'aime</div>
+
+  <script>
+    /* Haupt-Countdown */
+    const target = new Date("2026-08-01T00:00:00").getTime();
+    const start  = new Date("2025-08-01T00:00:00").getTime();
+
+    const el = {
+      d: document.getElementById("days"),
+      h: document.getElementById("hours"),
+      m: document.getElementById("minutes"),
+      s: document.getElementById("seconds"),
+      f: document.getElementById("fill"),
+      weekends: document.getElementById("weekendsLeft"),
+      months: document.getElementById("monthsLeft"),
+      // Birthday
+      bdayLeft: document.getElementById("bdayLeft"),
+      bdayPct: document.getElementById("bdayPct"),
+      bdayArc: document.getElementById("bdayArc"),
+      // Meeting
+      meetLeft: document.getElementById("meetLeft"),
+      meetPct: document.getElementById("meetPct"),
+      meetArc: document.getElementById("meetArc"),
+    };
+
+    function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
+    function flipTo(element, newVal){
+      if (element.textContent !== String(newVal)) {
+        element.classList.remove("flip"); void element.offsetWidth;
+        element.textContent = newVal; element.classList.add("flip");
+      }
+    }
+
+    function updateClock(){
+      const now = Date.now(); let rem = target - now;
+      if (rem <= 0){
+        flipTo(el.d,"000"); flipTo(el.h,"00"); flipTo(el.m,"00"); flipTo(el.s,"00");
+      } else {
+        const d = Math.floor(rem/86400000); rem%=86400000;
+        const h = Math.floor(rem/3600000);  rem%=3600000;
+        const m = Math.floor(rem/60000);    rem%=60000;
+        const s = Math.floor(rem/1000);
+        flipTo(el.d, pad(d,3)); flipTo(el.h, pad(h,2)); flipTo(el.m, pad(m,2)); flipTo(el.s, pad(s,2));
+      }
+    }
+
+    /* Haupt-Prozent (smooth) */
+    const total = Math.max(1, target - start);
+    function updateProgress(){
+      const now = Date.now();
+      let elapsed = now - start; if (elapsed < 0) elapsed = 0; if (elapsed > total) elapsed = total;
+      const pct = (elapsed / total) * 100;
+      el.f.style.width = pct + "%";
+      el.f.textContent = pct.toFixed(6) + "%";
+      requestAnimationFrame(updateProgress);
+    }
+
+    /* Wochenenden: 1 pro Woche (Samstag als Marker) */
+    function weekendsRemaining(nowMs, targetMs){
+      const msDay = 86400000;
+      let d = new Date(nowMs); d.setHours(0,0,0,0);
+      const end = new Date(targetMs); end.setHours(0,0,0,0);
+      if (end <= d) return 0;
+      const dow = d.getDay(); // 0=So..6=Sa
+      const daysToSat = (6 - dow + 7) % 7;
+      const firstSat = new Date(d.getTime() + daysToSat * msDay);
+      if (firstSat > end) return 0;
+      const diffDays = Math.floor((end - firstSat) / msDay);
+      return Math.floor(diffDays / 7) + 1;
+    }
+
+    /* Monate/Gehalt bis Ziel: zähle 1. des Monats NACH jetzt bis (exklusiv) 01.08.2026 */
+    function monthsRemaining(nowMs, targetMs){
+      let now = new Date(nowMs);
+      const targetD = new Date(targetMs);
+      now.setHours(0,0,0,0);
+      const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      let nextFirst = firstThisMonth;
+      if (now.getTime() >= firstThisMonth.getTime()) {
+        // wenn heute nach dem 1. (oder genau 1. aber nach 00:00), nimm den 1. des nächsten Monats
+        nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      }
+      let count = 0;
+      while (nextFirst < targetD) {
+        count++;
+        nextFirst = new Date(nextFirst.getFullYear(), nextFirst.getMonth() + 1, 1);
+      }
+      return count;
+    }
+
+    /* ===== RING-LOGIK: Zyklus ist IMMER 1. Aug -> nächstes Ziel-Datum (M,D) ===== */
+    function cycleStartEndForTarget(monthIndex0, day){
+      const now = new Date();
+      const y = now.getFullYear();
+      const aug1_y   = new Date(y, 7, 1, 0,0,0,0);
+      const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
+
+      if (monthIndex0 >= 7){
+        if (now < aug1_y){
+          return { start: new Date(y-1,7,1).getTime(), end: new Date(y-1, monthIndex0, day).getTime() };
+        } else if (now <= target_y){
+          return { start: aug1_y.getTime(), end: target_y.getTime() };
+        } else {
+          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+1, monthIndex0, day).getTime() };
+        }
+      } else {
+        const target_next = new Date(y+1, monthIndex0, day, 0,0,0,0);
+        if (now < aug1_y){
+          return { start: new Date(y-1,7,1).getTime(), end: new Date(y, monthIndex0, day).getTime() };
+        } else if (now < target_next){
+          return { start: aug1_y.getTime(), end: target_next.getTime() };
+        } else {
+          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+2, monthIndex0, day).getTime() };
+        }
+      }
+    }
+
+    function formatDHMS(ms){
+      if (ms < 0) ms = 0;
+      const d = Math.floor(ms / 86400000); ms %= 86400000;
+      const h = Math.floor(ms / 3600000);  ms %= 3600000;
+      const m = Math.floor(ms / 60000);    ms %= 60000;
+      const s = Math.floor(ms / 1000);
+      return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
+    }
+
+    const ARC_LEN = 2*Math.PI*52; // ≈ 326.7256 (r=52)
+    function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
+      const span = Math.max(1, endMs - startMs);
+      let done = nowMs - startMs; if (done < 0) done = 0; if (done > span) done = span;
+      const pct = (done / span) * 100;
+
+      const offset = ARC_LEN * (1 - done / span);
+      arcEl.style.strokeDasharray = ARC_LEN.toString();
+      arcEl.style.strokeDashoffset = offset.toString();
+
+      pctEl.textContent = pct.toFixed(6) + "%";
+      leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
+    }
+
+    function updateCorners(){
+      const now = Date.now();
+
+      // Wochenenden bis Hauptziel
+      el.weekends.textContent = `Noch ${weekendsRemaining(now, target)} Wochenenden`;
+
+      // Monate/Gehalt bis Ziel (1. des Monats)
+      el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
+
+      // Birthday-Ring (13. Jan, month=0, day=13) – Zyklus 1. Aug -> 13. Jan
+      const bdaySpan = cycleStartEndForTarget(0, 13);
+      updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
+
+      // Meeting-Ring (26. Sep, month=8, day=26) – Zyklus 1. Aug -> 26. Sep
+      const meetSpan = cycleStartEndForTarget(8, 26);
+      updateRing(meetSpan.start, meetSpan.end, now, el.meetArc, el.meetLeft, el.meetPct);
+    }
+
+    /* Start */
+    updateClock(); setInterval(updateClock, 1000);
+    requestAnimationFrame(updateProgress);
+    updateCorners(); setInterval(updateCorners, 1000);
+  </script>
+</body>
+</html>
