@@ -83,9 +83,9 @@
 <body>
   <h1>Verbleibende Zeit</h1>
 
-  <!-- OBEN LINKS: Nächstes Treffen (1. Aug -> 26. Sep) -->
+  <!-- OBEN LINKS: Nächstes Treffen -->
   <div class="corner left-top" id="meetBox">
-    <div class="title">Nächstes Treffen (26. Sep)</div>
+    <div class="title">Nächstes Treffen (23. Okt)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
@@ -105,13 +105,13 @@
     <div class="mono" id="weekendsLeft">…</div>
   </div>
 
-  <!-- UNTEN LINKS: Monate / Gehalt bis Ziel -->
+  <!-- UNTEN LINKS: Monatsgehälter bis Ziel -->
   <div class="corner left-bottom">
     <div class="title">Monatsgehälter bis Ziel</div>
     <div class="mono" id="monthsLeft">…</div>
   </div>
 
-  <!-- UNTEN RECHTS: Birthday (1. Aug -> 13. Jan) -->
+  <!-- UNTEN RECHTS: Birthday -->
   <div class="corner right-bottom" id="birthdayBox">
     <div class="title">Gemeinsamer Birthday (12./13. Jan)</div>
     <div class="ringWrap">
@@ -167,6 +167,10 @@
     const target = new Date("2026-08-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
 
+    /* Meeting-Zeitraum: 30. Sep -> 23. Okt */
+    const MEET_START = new Date("2025-09-30T00:00:00").getTime();
+    const MEET_END   = new Date("2025-10-23T00:00:00").getTime();
+
     const el = {
       d: document.getElementById("days"),
       h: document.getElementById("hours"),
@@ -175,11 +179,9 @@
       f: document.getElementById("fill"),
       weekends: document.getElementById("weekendsLeft"),
       months: document.getElementById("monthsLeft"),
-      // Birthday
       bdayLeft: document.getElementById("bdayLeft"),
       bdayPct: document.getElementById("bdayPct"),
       bdayArc: document.getElementById("bdayArc"),
-      // Meeting
       meetLeft: document.getElementById("meetLeft"),
       meetPct: document.getElementById("meetPct"),
       meetArc: document.getElementById("meetArc"),
@@ -217,7 +219,7 @@
       requestAnimationFrame(updateProgress);
     }
 
-    /* Wochenenden: 1 pro Woche (Samstag als Marker) */
+    /* Wochenenden (Samstag als Marker) */
     function weekendsRemaining(nowMs, targetMs){
       const msDay = 86400000;
       let d = new Date(nowMs); d.setHours(0,0,0,0);
@@ -231,7 +233,7 @@
       return Math.floor(diffDays / 7) + 1;
     }
 
-    /* Monate/Gehalt bis Ziel: zähle 1. des Monats NACH jetzt bis (exklusiv) 01.08.2026 */
+    /* Monate/Gehalt bis Ziel: 1. des Monats nach jetzt bis (exklusiv) 01.08.2026 */
     function monthsRemaining(nowMs, targetMs){
       let now = new Date(nowMs);
       const targetD = new Date(targetMs);
@@ -239,7 +241,6 @@
       const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       let nextFirst = firstThisMonth;
       if (now.getTime() >= firstThisMonth.getTime()) {
-        // wenn heute nach dem 1. (oder genau 1. aber nach 00:00), nimm den 1. des nächsten Monats
         nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
       }
       let count = 0;
@@ -250,7 +251,7 @@
       return count;
     }
 
-    /* ===== RING-LOGIK: Zyklus ist IMMER 1. Aug -> nächstes Ziel-Datum (M,D) ===== */
+    /* Birthday (13. Jan) – Zyklus 1. Aug -> 13. Jan */
     function cycleStartEndForTarget(monthIndex0, day){
       const now = new Date();
       const y = now.getFullYear();
@@ -286,7 +287,7 @@
       return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
     }
 
-    const ARC_LEN = 2*Math.PI*52; // ≈ 326.7256 (r=52)
+    const ARC_LEN = 2*Math.PI*52; // r=52
     function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
       const span = Math.max(1, endMs - startMs);
       let done = nowMs - startMs; if (done < 0) done = 0; if (done > span) done = span;
@@ -303,19 +304,18 @@
     function updateCorners(){
       const now = Date.now();
 
-      // Wochenenden bis Hauptziel
+      // Wochenenden bis Ziel
       el.weekends.textContent = `Noch ${weekendsRemaining(now, target)} Wochenenden`;
 
-      // Monate/Gehalt bis Ziel (1. des Monats)
+      // Monatsgehälter bis Ziel
       el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
 
-      // Birthday-Ring (13. Jan, month=0, day=13) – Zyklus 1. Aug -> 13. Jan
+      // Birthday-Ring (13. Jan)
       const bdaySpan = cycleStartEndForTarget(0, 13);
       updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
 
-      // Meeting-Ring (26. Sep, month=8, day=26) – Zyklus 1. Aug -> 26. Sep
-      const meetSpan = cycleStartEndForTarget(8, 26);
-      updateRing(meetSpan.start, meetSpan.end, now, el.meetArc, el.meetLeft, el.meetPct);
+      // Meeting-Ring: 30. Sep -> 23. Okt
+      updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
     }
 
     /* Start */
@@ -325,3 +325,4 @@
   </script>
 </body>
 </html>
+
