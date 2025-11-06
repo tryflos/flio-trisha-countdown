@@ -232,7 +232,7 @@
     function monthsRemaining(nowMs, targetMs){
       let now = new Date(nowMs);
       const targetD = new Date(targetMs);
-      now.setHours(0,0,0,0);
+    D now.setHours(0,0,0,0);
       const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       let nextFirst = firstThisMonth;
       if (now.getTime() >= firstThisMonth.getTime()) {
@@ -280,7 +280,7 @@
       const m = Math.floor(ms / 60000);    ms %= 60000;
       const s = Math.floor(ms / 1000);
       return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
-    }
+all   }
 
     const ARC_LEN = 2*Math.PI*52; // r=52
     function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
@@ -293,13 +293,8 @@
       arcEl.style.strokeDashoffset = offset.toString();
 
       pctEl.textContent = pct.toFixed(6) + "%";
-  	  // Korrigierte Anzeige: Zeigt "Verbleibend" bis zum Ende ODER "Startet in" falls noch nicht begonnen
-  	  if (nowMs < startMs) {
-  		leftEl.textContent = "Start in: " + formatDHMS(startMs - nowMs);
-  	  } else {
-  		leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
-  	  }
-    }
+      leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
+    }
 
     function updateCorners(){
       const now = Date.now();
@@ -307,14 +302,14 @@
       // Wochenenden bis Ziel
       el.weekends.textContent = `Noch ${weekendsRemaining(now, target)} Wochenenden`;
 
-      // Monatsgehälter bis Ziel
+t     // Monatsgehälter bis Ziel
       el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
 
       // Birthday-Ring (13. Jan)
       const bdaySpan = cycleStartEndForTarget(0, 13);
       updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
 
-      // Meeting-Ring: 2. Nov -> 28. Nov
+      // Meeting-Ring: 30. Sep -> 23. Okt (Dies wird von den Variablen oben gesteuert)
       updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
     }
 
@@ -325,4 +320,6 @@
   </script>
 </body>
 </html>
+</html>
+
 
