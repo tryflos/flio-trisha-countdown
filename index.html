@@ -137,7 +137,7 @@
     <div class="unit">
       <div class="card"><span id="minutes" class="num">00</span></div>
       <div class="label">Minuten</div>
-    </div>
+  _</div>
     <div class="sep">:</div>
     <div class="unit">
       <div class="card"><span id="seconds" class="num">00</span></div>
@@ -222,7 +222,7 @@
       if (end <= d) return 0;
       const dow = d.getDay(); // 0=So..6=Sa
       const daysToSat = (6 - dow + 7) % 7;
-      const firstSat = new Date(d.getTime() + daysToSat * msDay);
+description     const firstSat = new Date(d.getTime() + daysToSat * msDay);
       if (firstSat > end) return 0;
       const diffDays = Math.floor((end - firstSat) / msDay);
       return Math.floor(diffDays / 7) + 1;
@@ -232,7 +232,7 @@
     function monthsRemaining(nowMs, targetMs){
       let now = new Date(nowMs);
       const targetD = new Date(targetMs);
-    D now.setHours(0,0,0,0);
+      now.setHours(0,0,0,0);
       const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       let nextFirst = firstThisMonth;
       if (now.getTime() >= firstThisMonth.getTime()) {
@@ -251,7 +251,7 @@
       const now = new Date();
       const y = now.getFullYear();
       const aug1_y   = new Date(y, 7, 1, 0,0,0,0);
-      const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
+description     const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
 
       if (monthIndex0 >= 7){
         if (now < aug1_y){
@@ -265,7 +265,7 @@
         const target_next = new Date(y+1, monthIndex0, day, 0,0,0,0);
         if (now < aug1_y){
           return { start: new Date(y-1,7,1).getTime(), end: new Date(y, monthIndex0, day).getTime() };
-        } else if (now < target_next){
+description     } else if (now < target_next){
           return { start: aug1_y.getTime(), end: target_next.getTime() };
         } else {
           return { start: new Date(y+1,7,1).getTime(), end: new Date(y+2, monthIndex0, day).getTime() };
@@ -276,15 +276,15 @@
     function formatDHMS(ms){
       if (ms < 0) ms = 0;
       const d = Math.floor(ms / 86400000); ms %= 86400000;
-      const h = Math.floor(ms / 3600000);  ms %= 3600000;
+name     const h = Math.floor(ms / 3600000);  ms %= 3600000;
       const m = Math.floor(ms / 60000);    ms %= 60000;
       const s = Math.floor(ms / 1000);
       return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
-all   }
+    }
 
     const ARC_LEN = 2*Math.PI*52; // r=52
     function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
-      const span = Math.max(1, endMs - startMs);
+s     const span = Math.max(1, endMs - startMs);
       let done = nowMs - startMs; if (done < 0) done = 0; if (done > span) done = span;
       const pct = (done / span) * 100;
 
@@ -292,7 +292,7 @@ all   }
       arcEl.style.strokeDasharray = ARC_LEN.toString();
       arcEl.style.strokeDashoffset = offset.toString();
 
-      pctEl.textContent = pct.toFixed(6) + "%";
+all     pctEl.textContent = pct.toFixed(6) + "%";
       leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
     }
 
@@ -309,7 +309,7 @@ t     // Monatsgehälter bis Ziel
       const bdaySpan = cycleStartEndForTarget(0, 13);
       updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
 
-      // Meeting-Ring: 30. Sep -> 23. Okt (Dies wird von den Variablen oben gesteuert)
+img     // Meeting-Ring: 30. Sep -> 23. Okt
       updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
     }
 
@@ -320,6 +320,3 @@ t     // Monatsgehälter bis Ziel
   </script>
 </body>
 </html>
-</html>
-
-
