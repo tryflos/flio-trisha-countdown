@@ -24,6 +24,7 @@
       background: radial-gradient(900px 520px at 50% 20%, #ffd3e6, var(--bg));
       color: var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow-x: hidden; /* Verhindert Scrollbalken durch die Katze */
     }
     h1{
       margin:0; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
@@ -78,13 +79,31 @@
     .ringWrap{ display:flex; align-items:center; gap:10px; }
     .ring{ width:64px; height:64px; transform: rotate(-90deg); } /* Start oben */
     .pctText{ font-weight:800; font-size:12px; }
+
+    /* NEU: Die wandernde Katze */
+    #wandering-cat {
+      position: fixed;
+      z-index: 4; /* Über dem Hintergrund, unter den Ecken-Karten (z-index 5) */
+      width: 80px; /* Größe anpassen, falls nötig */
+      height: auto;
+      pointer-events: none; /* Damit man durch die Katze durchklicken kann */
+      /* Startposition außerhalb des Bildschirms */
+      top: -100px;
+      left: -100px;
+      /* Für weiche Bewegung */
+      transition: top linear, left linear;
+    }
+    /* Klasse zum Spiegeln, wenn sie nach links läuft */
+    .facing-left {
+      transform: scaleX(-1);
+    }
   </style>
 </head>
 <body>
   <h1>Verbleibende Zeit</h1>
 
   <div class="corner left-top" id="meetBox">
-    <div class="title">Gemeinsames Silvester</div>
+    <div class="title">Gemeinsames Silvester (30. Dez)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
@@ -157,12 +176,15 @@
 
   <div class="foot">Ich liebe dich ❤️ Je t'aime</div>
 
+  <img id="wandering-cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOTVlYjRkY2I1YjQ4YjQ4YjQ4YjQ4YjQ4YjQ4YjQ4YjQ4YiZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3o7TKSha51ATTx9KzC/giphy.gif" alt="Walking Cat">
+
+
   <script>
     /* Haupt-Countdown */
     const target = new Date("2026-08-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
 
-    /* UPDATE: Silvester-Zeitraum: 06. Dez -> 30. Dez */
+    /* Silvester-Countdown: 06. Dez -> 30. Dez */
     const MEET_START = new Date("2025-12-06T00:00:00").getTime();
     const MEET_END   = new Date("2025-12-30T00:00:00").getTime();
 
@@ -228,7 +250,7 @@
       return Math.floor(diffDays / 7) + 1;
     }
 
-    /* Monate/Gehalt bis Ziel */
+    /* Monate/Gehalt bis Ziel: 1. des Monats nach jetzt bis (exklusiv) 01.08.2026 */
     function monthsRemaining(nowMs, targetMs){
       let now = new Date(nowMs);
       const targetD = new Date(targetMs);
@@ -250,7 +272,7 @@
     function cycleStartEndForTarget(monthIndex0, day){
       const now = new Date();
       const y = now.getFullYear();
-      const aug1_y    = new Date(y, 7, 1, 0,0,0,0);
+      const aug1_y   = new Date(y, 7, 1, 0,0,0,0);
       const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
 
       if (monthIndex0 >= 7){
@@ -309,7 +331,7 @@
       const bdaySpan = cycleStartEndForTarget(0, 13);
       updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
 
-      // Meeting-Ring (Silvester): 06. Dez -> 30. Dez
+      // Meeting-Ring: 06. Dez -> 30. Dez
       updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
     }
 
@@ -317,6 +339,52 @@
     updateClock(); setInterval(updateClock, 1000);
     requestAnimationFrame(updateProgress);
     updateCorners(); setInterval(updateCorners, 1000);
+
+
+    /* =========================================
+       NEU: Wandernde Katze Logik
+       ========================================= */
+    const cat = document.getElementById('wandering-cat');
+    let catX = -100; // Startpositionen
+    let catY = -100;
+
+    function moveCatRandomly() {
+      // Bildschirmgrenzen abzüglich Katzengröße (ca. 80px)
+      const maxX = window.innerWidth - 80;
+      const maxY = window.innerHeight - 80;
+
+      // Neue zufällige Zielposition
+      const nextX = Math.random() * maxX;
+      const nextY = Math.random() * maxY;
+
+      // Dauer der Bewegung (zufällig zwischen 3 und 7 Sekunden für "gemütliches" Laufen)
+      const duration = 3000 + Math.random() * 4000;
+
+      // Richtung bestimmen: Wenn neues X kleiner als altes X, läuft sie nach links
+      if (nextX < catX) {
+        cat.classList.add('facing-left');
+      } else {
+        cat.classList.remove('facing-left');
+      }
+
+      // Geschwindigkeit der Transition anpassen
+      cat.style.transitionDuration = `${duration}ms`;
+
+      // Neue Position setzen (CSS Transition übernimmt die Bewegung)
+      cat.style.left = `${nextX}px`;
+      cat.style.top = `${nextY}px`;
+
+      // Aktuelle Position updaten
+      catX = nextX;
+      catY = nextY;
+
+      // Den nächsten Spaziergang planen, wenn dieser fertig ist (+ kleine Pause)
+      setTimeout(moveCatRandomly, duration + 1000 + Math.random() * 2000);
+    }
+
+    // Startet die erste Bewegung nach 1 Sekunde
+    setTimeout(moveCatRandomly, 1000);
+
   </script>
 </body>
 </html>
