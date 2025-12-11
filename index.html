@@ -6,16 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      --bg: #ffc6dc;
-      --panel: #2a2420;
-      --text: #1a0f10;
-      --accent: #5b3a28;
-      --muted: #3d322b;
-      --edge: #7a5f4e;
+      --bg: #ffc6dc;        
+      --panel: #2a2420;     
+      --text: #1a0f10;      
+      --accent: #5b3a28;    
+      --muted: #3d322b;     
+      --edge: #7a5f4e;      
       --shadow: rgba(0,0,0,.25);
       --card-grad-top: #3a312a;
-      --ring-bg: #f6d9e4;
-      --ring-fg: #e2b487;
     }
     * { box-sizing: border-box; }
     body{
@@ -31,297 +29,346 @@
       text-shadow: 0 2px 6px rgba(255,255,255,.6);
     }
 
+    /* Flip Clock */
     .clock{ display:flex; align-items:stretch; gap:16px; padding:8px; }
     .unit{ display:flex; flex-direction:column; align-items:center; gap:10px; }
     .card{
-      position:relative; width: clamp(90px, 14vw, 150px); height: clamp(78px, 11vw, 110px);
+      position:relative;
+      width: clamp(90px, 14vw, 150px);
+      height: clamp(78px, 11vw, 110px);
       background: linear-gradient(var(--card-grad-top), var(--panel));
-      border-radius:16px; border: 1px solid var(--edge);
+      border-radius:16px;
+      border: 1px solid var(--edge);
       box-shadow: 0 18px 28px var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
-      display:flex; align-items:center; justify-content:center; perspective: 1000px; overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
     }
     .card::before{
       content:""; position:absolute; left:0; right:0; top:50%; height:1px;
-      background: rgba(255,255,255,.18); box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset; transform: translateY(-.5px);
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset;
     }
     .num{
-      font-variant-numeric: tabular-nums lining-nums; font-weight:800;
-      font-size: clamp(40px, 7.4vw, 68px); letter-spacing:.02em; backface-visibility: hidden; color:#fff;
+      font-variant-numeric: tabular-nums lining-nums;
+      font-weight: 800; font-size: clamp(40px, 7.4vw, 68px);
+      color: #fff;
       text-shadow: 0 2px 8px rgba(0,0,0,.45);
     }
     .flip{ animation: flip .7s cubic-bezier(.2,.6,.2,1); }
-    @keyframes flip{ 0%{transform:rotateX(0)} 50%{transform:rotateX(-90deg)} 100%{transform:rotateX(0)} }
-    .label{ font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); opacity:.95; }
-    .sep{ align-self:center; margin:0 2px; color:#5b3a28; opacity:.55; font-weight:800; font-size:clamp(22px, 4vw, 32px); }
+    @keyframes flip{
+      0% { transform: rotateX(0); }
+      50% { transform: rotateX(-90deg); }
+      100% { transform: rotateX(0); }
+    }
+    .sep{ align-self:center; margin:0 2px; color:#5b3a28; opacity:.55; font-weight:800; font-size: clamp(22px, 4vw, 32px); }
+    .label{ font-size:12px; text-transform:uppercase; letter-spacing:.18em; color:var(--accent); opacity:.95;}
 
     /* Fortschritt */
     .progress-wrap{ width:min(860px, 92vw); display:flex; flex-direction:column; gap:10px; }
     .progress-head{ display:flex; justify-content:space-between; font-size:14px; color:#5b3a28; opacity:.95; font-weight:700;}
-    .bar{ width:100%; height:22px; background:#ffe2ee; border-radius:999px; border:1px solid #e7b9c9; overflow:hidden; box-shadow: inset 0 2px 6px rgba(0,0,0,.08); }
-    .fill{ height:100%; width:0%; background: linear-gradient(180deg, #ffe0b8, #e2b487); color:#1a1a1a; text-align:center; font-size:12px; font-weight:900; line-height:22px; transition: width .2s linear; white-space: nowrap; }
+    .bar{
+      width:100%; height:22px;
+      background: #ffe2ee;
+      border-radius:999px; border:1px solid #e7b9c9;
+      overflow:hidden;
+    }
+    .fill{
+      height:100%; width:0%;
+      background: linear-gradient(180deg, #ffe0b8, #e2b487);
+      color:#1a1a1a; text-align:center; font-size:12px; font-weight:900; line-height:22px;
+      transition: width .2s linear;
+      white-space: nowrap;
+    }
+
     .foot{ font-size:12px; color:#6a4633; opacity:.85; }
 
-    /* Corner Cards */
-    .corner{
-      position: fixed; z-index: 5; background: #ffffffcc; color:#1a0f10;
-      border:1px solid #e7b9c9; border-radius:12px; padding:10px 12px; backdrop-filter: blur(4px);
-      box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size:13px; line-height:1.25;
+    /* Zusatzboxen */
+    .cornerbox{
+      position:fixed;
+      background:#ffffffaa;
+      backdrop-filter: blur(6px);
+      border-radius:16px;
+      padding:12px 18px;
+      font-size:14px;
+      color:#3a2a24;
+      border:1px solid #d6c4bd;
+      box-shadow:0 4px 12px rgba(0,0,0,.15);
+      width:200px;
     }
-    .corner .title{ font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px; font-size:11px; }
-    .corner.right-top{ top:14px; right:14px; text-align:right; }
-    .corner.left-top{ top:14px; left:14px; }
-    .corner.left-bottom{ bottom:14px; left:14px; }
-    .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
-    .mono{ font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    #meetBox{ top:20px; left:20px; }          /* Neues Treffen */
+    #weekendBox{ top:20px; right:20px;}       /* Wochenenden */
+    #salaryBox{ bottom:20px; left:20px;}      /* Gehalts-Monat */
+    #birthdayBox{ bottom:20px; right:20px;}   /* Geburtstag */
 
-    /* Circular progress */
-    .ringWrap{ display:flex; align-items:center; gap:10px; }
-    .ring{ width:64px; height:64px; transform: rotate(-90deg); } /* Start oben */
-    .pctText{ font-weight:800; font-size:12px; }
+    .circle-wrap{
+      width:90px; height:90px; position:relative;
+    }
+    .circle{
+      stroke-width:10;
+      fill:none;
+      transform:rotate(-90deg);
+      transform-origin:50% 50%;
+    }
+    .circle-bg{
+      stroke:#e8d0c5;
+    }
+    .circle-fill{
+      stroke:#8a6148;
+      stroke-linecap:round;
+      transition:stroke-dashoffset .2s linear;
+    }
+    .circle-text{
+      position:absolute;
+      inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:14px;
+      font-weight:700;
+    }
   </style>
 </head>
 <body>
-  <h1>Verbleibende Zeit</h1>
 
-  <!-- OBEN LINKS: Nächstes Treffen -->
-  <div class="corner left-top" id="meetBox">
-    <div class="title">Nächstes Treffen (28. Nov)</div>
-    <div class="ringWrap">
-      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="meetArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
-                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
-      </svg>
-      <div>
-        <div class="mono" id="meetLeft">…</div>
-        <div class="mono pctText" id="meetPct">0.000000%</div>
-      </div>
-    </div>
+<h1>Time Remaining</h1>
+
+<!-- Flip Clock -->
+<div class="clock">
+  <div class="unit"><div class="card"><span id="days" class="num">000</span></div><div class="label">Days</div></div>
+  <div class="sep">:</div>
+  <div class="unit"><div class="card"><span id="hours" class="num">00</span></div><div class="label">Hours</div></div>
+  <div class="sep">:</div>
+  <div class="unit"><div class="card"><span id="minutes" class="num">00</span></div><div class="label">Minutes</div></div>
+  <div class="sep">:</div>
+  <div class="unit"><div class="card"><span id="seconds" class="num">00</span></div><div class="label">Seconds</div></div>
+</div>
+
+<!-- Hauptfortschritt -->
+<div class="progress-wrap">
+  <div class="progress-head">
+    <div>Schon geschafft seit <strong>01.08.2025</strong></div>
+    <div>Ziel: <strong>01.08.2026</strong></div>
   </div>
+  <div class="bar"><div id="fill" class="fill">0.000000%</div></div>
+</div>
 
-  <!-- OBEN RECHTS: Wochenenden bis Ziel -->
-  <div class="corner right-top">
-    <div class="title">Wochenenden bis zum Ziel</div>
-    <div class="mono" id="weekendsLeft">…</div>
+<div class="foot">❤️ Jeden Moment ein bisschen näher.</div>
+
+<!-- Zusatzboxen -->
+
+<!-- OBEN LINKS — Neues Treffen -->
+<div id="meetBox" class="cornerbox">
+  <strong>Gemeinsames Silvester</strong><br/>
+  Tage: <span id="meetDays">0</span><br/>
+  <div class="circle-wrap">
+    <svg width="90" height="90">
+      <circle class="circle circle-bg" cx="45" cy="45" r="38"></circle>
+      <circle class="circle circle-fill" id="meetCircle" cx="45" cy="45" r="38"></circle>
+    </svg>
+    <div class="circle-text" id="meetPct">0%</div>
   </div>
+</div>
 
-  <!-- UNTEN LINKS: Monatsgehälter bis Ziel -->
-  <div class="corner left-bottom">
-    <div class="title">Monatsgehälter bis Ziel</div>
-    <div class="mono" id="monthsLeft">…</div>
+<!-- OBEN RECHTS — Wochenenden -->
+<div id="weekendBox" class="cornerbox">
+  <strong>Wochenenden bis Ziel</strong><br/>
+  <span id="weekends">0</span> übrig
+</div>
+
+<!-- UNTEN LINKS — Lohnmonat -->
+<div id="salaryBox" class="cornerbox">
+  <strong>Nächster Zahltag (1. des Monats)</strong><br/>
+  Tage: <span id="salaryDays">0</span><br/>
+  <div class="circle-wrap">
+    <svg width="90" height="90">
+      <circle class="circle circle-bg" cx="45" cy="45" r="38"></circle>
+      <circle class="circle circle-fill" id="salaryCircle" cx="45" cy="45" r="38"></circle>
+    </svg>
+    <div class="circle-text" id="salaryPct">0%</div>
   </div>
+</div>
 
-  <!-- UNTEN RECHTS: Birthday -->
-  <div class="corner right-bottom" id="birthdayBox">
-    <div class="title">Gemeinsamer Birthday (12./13. Jan)</div>
-    <div class="ringWrap">
-      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="bdayArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
-                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
-      </svg>
-      <div>
-        <div class="mono" id="bdayLeft">…</div>
-        <div class="mono pctText" id="bdayPct">0.000000%</div>
-      </div>
-    </div>
+<!-- UNTEN RECHTS — Geburtstag -->
+<div id="birthdayBox" class="cornerbox">
+  <strong>Unser Geburtstag</strong><br/>
+  Tage: <span id="bdayDays">0</span><br/>
+  <div class="circle-wrap">
+    <svg width="90" height="90">
+      <circle class="circle circle-bg" cx="45" cy="45" r="38"></circle>
+      <circle class="circle circle-fill" id="bdayCircle" cx="45" cy="45" r="38"></circle>
+    </svg>
+    <div class="circle-text" id="bdayPct">0%</div>
   </div>
+</div>
 
-  <!-- Haupt-Flip-Clock -->
-  <div class="clock" aria-label="Flip Clock Countdown">
-    <div class="unit">
-      <div class="card"><span id="days" class="num">000</span></div>
-      <div class="label">Tage</div>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="card"><span id="hours" class="num">00</span></div>
-      <div class="label">Stunden</div>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="card"><span id="minutes" class="num">00</span></div>
-      <div class="label">Minuten</div>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="card"><span id="seconds" class="num">00</span></div>
-      <div class="label">Sekunden</div>
-    </div>
-  </div>
+<script>
+/*** HAUPT COUNTDOWN 1 AUG 2026 ***/
+const target = new Date("2026-08-01T00:00:00").getTime();
+const start  = new Date("2025-08-01T00:00:00").getTime();
 
-  <div class="progress-wrap">
-    <div class="progress-head">
-      <div>Schon geschafft seit dem <strong>01.08.2025</strong></div>
-      <div>Ziel: <strong>01.08.2026</strong></div>
-    </div>
-    <div class="bar" aria-label="Fortschritt">
-      <div id="fill" class="fill">0.000000%</div>
-    </div>
-  </div>
+const el = {
+  d: document.getElementById("days"),
+  h: document.getElementById("hours"),
+  m: document.getElementById("minutes"),
+  s: document.getElementById("seconds"),
+  f: document.getElementById("fill"),
+};
 
-  <div class="foot">Ich liebe dich ❤️ Je t'aime</div>
+function pad(n,len){ return String(Math.max(0,n)).padStart(len,"0"); }
 
-  <script>
-    /* Haupt-Countdown */
-    const target = new Date("2026-08-01T00:00:00").getTime();
-    const start  = new Date("2025-08-01T00:00:00").getTime();
+function flipTo(element,newVal){
+  if(element.textContent !== String(newVal)){
+    element.classList.remove("flip");
+    void element.offsetWidth;
+    element.textContent = newVal;
+    element.classList.add("flip");
+  }
+}
 
-    /* Meeting-Zeitraum: 02. Nov -> 28. Nov (aktualisiert) */
-    const MEET_START = new Date("2025-11-02T00:00:00").getTime();
-    const MEET_END   = new Date("2025-11-28T00:00:00").getTime();
+function updateClock(){
+  const now = Date.now();
+  let rem = target - now;
+  if(rem<=0){
+    ["d","h","m","s"].forEach(id=>flipTo(el[id],"00"));
+    return;
+  }
+  const days = Math.floor(rem/86400000); rem%=86400000;
+  const hours= Math.floor(rem/3600000);  rem%=3600000;
+  const mins = Math.floor(rem/60000);    rem%=60000;
+  const secs = Math.floor(rem/1000);
 
-    const el = {
-      d: document.getElementById("days"),
-      h: document.getElementById("hours"),
-      m: document.getElementById("minutes"),
-      s: document.getElementById("seconds"),
-      f: document.getElementById("fill"),
-      weekends: document.getElementById("weekendsLeft"),
-      months: document.getElementById("monthsLeft"),
-      bdayLeft: document.getElementById("bdayLeft"),
-      bdayPct: document.getElementById("bdayPct"),
-      bdayArc: document.getElementById("bdayArc"),
-      meetLeft: document.getElementById("meetLeft"),
-      meetPct: document.getElementById("meetPct"),
-      meetArc: document.getElementById("meetArc"),
-    };
+  flipTo(el.d,pad(days,3));
+  flipTo(el.h,pad(hours,2));
+  flipTo(el.m,pad(mins,2));
+  flipTo(el.s,pad(secs,2));
+}
+setInterval(updateClock,1000);
+updateClock();
 
-    function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
-    function flipTo(element, newVal){
-      if (element.textContent !== String(newVal)) {
-        element.classList.remove("flip"); void element.offsetWidth;
-        element.textContent = newVal; element.classList.add("flip");
-      }
-    }
+/*** Hauptfortschritt (Mitte) ***/
+const total = Math.max(1, target - start);
+function updateProgress(){
+  const now = Date.now();
+  let elapsed = now - start;
+  if(elapsed<0) elapsed=0;
+  if(elapsed>total) elapsed=total;
 
-    function updateClock(){
-      const now = Date.now(); let rem = target - now;
-      if (rem <= 0){
-        flipTo(el.d,"000"); flipTo(el.h,"00"); flipTo(el.m,"00"); flipTo(el.s,"00");
-      } else {
-        const d = Math.floor(rem/86400000); rem%=86400000;
-        const h = Math.floor(rem/3600000);  rem%=3600000;
-        const m = Math.floor(rem/60000);    rem%=60000;
-        const s = Math.floor(rem/1000);
-        flipTo(el.d, pad(d,3)); flipTo(el.h, pad(h,2)); flipTo(el.m, pad(m,2)); flipTo(el.s, pad(s,2));
-      }
-    }
+  const pct = (elapsed/total)*100;
+  el.f.style.width = pct + "%";
+  el.f.textContent = pct.toFixed(6) + "%";
 
-    /* Haupt-Prozent (smooth) */
-    const total = Math.max(1, target - start);
-    function updateProgress(){
-      const now = Date.now();
-      let elapsed = now - start; if (elapsed < 0) elapsed = 0; if (elapsed > total) elapsed = total;
-      const pct = (elapsed / total) * 100;
-      el.f.style.width = pct + "%";
-      el.f.textContent = pct.toFixed(6) + "%";
-      requestAnimationFrame(updateProgress);
-    }
+  requestAnimationFrame(updateProgress);
+}
+requestAnimationFrame(updateProgress);
 
-    /* Wochenenden (Samstag als Marker) */
-    function weekendsRemaining(nowMs, targetMs){
-      const msDay = 86400000;
-      let d = new Date(nowMs); d.setHours(0,0,0,0);
-      const end = new Date(targetMs); end.setHours(0,0,0,0);
-      if (end <= d) return 0;
-      const dow = d.getDay(); // 0=So..6=Sa
-      const daysToSat = (6 - dow + 7) % 7;
-      const firstSat = new Date(d.getTime() + daysToSat * msDay);
-      if (firstSat > end) return 0;
-      const diffDays = Math.floor((end - firstSat) / msDay);
-      return Math.floor(diffDays / 7) + 1;
-    }
+/*** OBEN LINKS – Gemeinsames Silvester (NEU) ***/
+const meetStart = new Date("2025-12-06T00:00:00").getTime();
+const meetEnd   = new Date("2025-12-30T00:00:00").getTime();
+const meetTotal = meetEnd - meetStart;
 
-    /* Monate/Gehalt bis Ziel: 1. des Monats nach jetzt bis (exklusiv) 01.08.2026 */
-    function monthsRemaining(nowMs, targetMs){
-      let now = new Date(nowMs);
-      const targetD = new Date(targetMs);
-      now.setHours(0,0,0,0);
-      const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      let nextFirst = firstThisMonth;
-      if (now.getTime() >= firstThisMonth.getTime()) {
-        nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      }
-      let count = 0;
-      while (nextFirst < targetD) {
-        count++;
-        nextFirst = new Date(nextFirst.getFullYear(), nextFirst.getMonth() + 1, 1);
-      }
-      return count;
-    }
+const elMeetDays = document.getElementById("meetDays");
+const elMeetPct  = document.getElementById("meetPct");
+const meetCircle = document.getElementById("meetCircle");
 
-    /* Birthday (13. Jan) – Zyklus 1. Aug -> 13. Jan */
-    function cycleStartEndForTarget(monthIndex0, day){
-      const now = new Date();
-      const y = now.getFullYear();
-      const aug1_y   = new Date(y, 7, 1, 0,0,0,0);
-      const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
+function updateMeet(){
+  const now = Date.now();
+  const remaining = Math.max(0, Math.ceil((meetEnd - now) / 86400000));
+  elMeetDays.textContent = remaining;
 
-      if (monthIndex0 >= 7){
-        if (now < aug1_y){
-          return { start: new Date(y-1,7,1).getTime(), end: new Date(y-1, monthIndex0, day).getTime() };
-        } else if (now <= target_y){
-          return { start: aug1_y.getTime(), end: target_y.getTime() };
-        } else {
-          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+1, monthIndex0, day).getTime() };
-        }
-      } else {
-        const target_next = new Date(y+1, monthIndex0, day, 0,0,0,0);
-        if (now < aug1_y){
-          return { start: new Date(y-1,7,1).getTime(), end: new Date(y, monthIndex0, day).getTime() };
-        } else if (now < target_next){
-          return { start: aug1_y.getTime(), end: target_next.getTime() };
-        } else {
-          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+2, monthIndex0, day).getTime() };
-        }
-      }
-    }
+  let elapsed = Math.min(Math.max(now - meetStart,0), meetTotal);
+  let pct = (elapsed / meetTotal) * 100;
 
-    function formatDHMS(ms){
-      if (ms < 0) ms = 0;
-      const d = Math.floor(ms / 86400000); ms %= 86400000;
-      const h = Math.floor(ms / 3600000);  ms %= 3600000;
-      const m = Math.floor(ms / 60000);    ms %= 60000;
-      const s = Math.floor(ms / 1000);
-      return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
-    }
+  const r = 38;
+  const c = 2 * Math.PI * r;
+  meetCircle.style.strokeDasharray = c;
+  meetCircle.style.strokeDashoffset = c - (pct/100)*c;
 
-    const ARC_LEN = 2*Math.PI*52; // r=52
-    function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
-      const span = Math.max(1, endMs - startMs);
-      let done = nowMs - startMs; if (done < 0) done = 0; if (done > span) done = span;
-      const pct = (done / span) * 100;
+  elMeetPct.textContent = pct.toFixed(1) + "%";
+}
+setInterval(updateMeet, 200);
+updateMeet();
 
-      const offset = ARC_LEN * (1 - done / span);
-      arcEl.style.strokeDasharray = ARC_LEN.toString();
-      arcEl.style.strokeDashoffset = offset.toString();
+/*** OBEN RECHTS – Wochenenden ***/
+const weekendsEl = document.getElementById("weekends");
+function countWeekends(){
+  const now = new Date();
+  let count = 0;
+  let d = new Date(now);
 
-      pctEl.textContent = pct.toFixed(6) + "%";
-      leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
-    }
+  while(d < new Date("2026-08-01T00:00:00")){
+    if(d.getDay() === 6 || d.getDay() === 0) count++;
+    d.setDate(d.getDate()+1);
+  }
+  weekendsEl.textContent = count;
+}
+setInterval(countWeekends, 3600000);
+countWeekends();
 
-    function updateCorners(){
-      const now = Date.now();
+/*** UNTEN LINKS – Nächster Zahltag 1. des Monats ***/
+const salaryDays = document.getElementById("salaryDays");
+const salaryPct  = document.getElementById("salaryPct");
+const salaryCircle = document.getElementById("salaryCircle");
 
-      // Wochenenden bis Ziel
-      el.weekends.textContent = `Noch ${weekendsRemaining(now, target)} Wochenenden`;
+function updateSalary(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  let next = new Date(y, m, 1);
+  if(now.getDate() >= 1) next = new Date(y, m+1, 1);
 
-      // Monatsgehälter bis Ziel
-      el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
+  const start = new Date(y, m, 1);
+  const end   = next;
 
-      // Birthday-Ring (13. Jan)
-      const bdaySpan = cycleStartEndForTarget(0, 13);
-      updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
+  const total = end - start;
+  let elapsed = now - start;
+  if(elapsed<0) elapsed=0;
+  if(elapsed>total) elapsed=total;
 
-      // Meeting-Ring: 02. Nov -> 28. Nov
-      updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
-    }
+  const remaining = Math.ceil((end - now)/86400000);
+  salaryDays.textContent = remaining;
 
-    /* Start */
-    updateClock(); setInterval(updateClock, 1000);
-    requestAnimationFrame(updateProgress);
-    updateCorners(); setInterval(updateCorners, 1000);
-  </script>
+  const pct = (elapsed/total)*100;
+
+  const r = 38;
+  const c = 2 * Math.PI * r;
+  salaryCircle.style.strokeDasharray = c;
+  salaryCircle.style.strokeDashoffset = c - (pct/100)*c;
+  salaryPct.textContent = pct.toFixed(1) + "%";
+}
+setInterval(updateSalary, 200);
+updateSalary();
+
+/*** UNTEN RECHTS – Geburtstag ***/
+const bdayDays = document.getElementById("bdayDays");
+const bdayPct  = document.getElementById("bdayPct");
+const bdayCircle = document.getElementById("bdayCircle");
+
+function updateBday(){
+  const now = new Date();
+  let next = new Date(now.getFullYear(), 0, 13);
+  if(now > next) next = new Date(now.getFullYear()+1, 0, 13);
+
+  const start = new Date(next.getFullYear()-1, 0, 13);
+  const end = next;
+
+  const total = end - start;
+  let elapsed = now - start;
+  if(elapsed<0) elapsed=0;
+  if(elapsed>total) elapsed=total;
+
+  const remaining = Math.ceil((end - now)/86400000);
+  bdayDays.textContent = remaining;
+
+  const pct = (elapsed/total)*100;
+
+  const r = 38;
+  const c = 2 * Math.PI * r;
+  bdayCircle.style.strokeDasharray = c;
+  bdayCircle.style.strokeDashoffset = c - (pct/100)*c;
+
+  bdayPct.textContent = pct.toFixed(1) + "%";
+}
+setInterval(updateBday, 200);
+updateBday();
+</script>
+
 </body>
 </html>
