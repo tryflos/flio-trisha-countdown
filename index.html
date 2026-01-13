@@ -69,10 +69,19 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size:13px; line-height:1.25;
     }
     .corner .title{ font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px; font-size:11px; }
-    .corner.right-top{ top:14px; right:14px; text-align:right; }
+    
+    /* Positionierungen */
     .corner.left-top{ top:14px; left:14px; }
+    .corner.right-top{ top:14px; right:14px; text-align:right; }
     .corner.left-bottom{ bottom:14px; left:14px; }
     .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
+    
+    /* NEU: Oben Mitte */
+    .corner.top-center { 
+      top: 14px; left: 50%; transform: translateX(-50%); 
+      text-align: center; 
+    }
+
     .mono{ font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
     /* Circular progress */
@@ -80,30 +89,24 @@
     .ring{ width:64px; height:64px; transform: rotate(-90deg); } /* Start oben */
     .pctText{ font-weight:800; font-size:12px; }
 
-    /* NEU: Die wandernde Katze */
+    /* Die wandernde Katze */
     #wandering-cat {
       position: fixed;
-      z-index: 4; /* Über dem Hintergrund, unter den Ecken-Karten (z-index 5) */
-      width: 80px; /* Größe anpassen, falls nötig */
+      z-index: 4; 
+      width: 80px; 
       height: auto;
-      pointer-events: none; /* Damit man durch die Katze durchklicken kann */
-      /* Startposition außerhalb des Bildschirms */
-      top: -100px;
-      left: -100px;
-      /* Für weiche Bewegung */
+      pointer-events: none; 
+      top: -100px; left: -100px;
       transition: top linear, left linear;
     }
-    /* Klasse zum Spiegeln, wenn sie nach links läuft */
-    .facing-left {
-      transform: scaleX(-1);
-    }
+    .facing-left { transform: scaleX(-1); }
   </style>
 </head>
 <body>
   <h1>Verbleibende Zeit</h1>
 
   <div class="corner left-top" id="meetBox">
-    <div class="title">Gemeinsames Silvester (30. Dez)</div>
+    <div class="title">Nächstes Treffen (29. Jan)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
@@ -113,6 +116,21 @@
       <div>
         <div class="mono" id="meetLeft">…</div>
         <div class="mono pctText" id="meetPct">0.000000%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="corner top-center">
+    <div class="title">Erster Jahrestag (14. Feb)</div>
+    <div class="ringWrap">
+      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
+        <circle id="annivArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
+                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
+      </svg>
+      <div>
+        <div class="mono" id="annivLeft">…</div>
+        <div class="mono pctText" id="annivPct">0.000000%</div>
       </div>
     </div>
   </div>
@@ -127,17 +145,17 @@
     <div class="mono" id="monthsLeft">…</div>
   </div>
 
-  <div class="corner right-bottom" id="birthdayBox">
-    <div class="title">Gemeinsamer Birthday (12./13. Jan)</div>
+  <div class="corner right-bottom">
+    <div class="title">Gemeinsamer Urlaub (Türkei)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="bdayArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
+        <circle id="vacationArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
                 stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
       </svg>
       <div>
-        <div class="mono" id="bdayLeft">…</div>
-        <div class="mono pctText" id="bdayPct">0.000000%</div>
+        <div class="mono" id="vacationLeft">…</div>
+        <div class="mono pctText" id="vacationPct">0.000000%</div>
       </div>
     </div>
   </div>
@@ -178,15 +196,22 @@
 
   <img id="wandering-cat" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW4wbGI1dThtdWw3aDhqczJraXRlNnp1bTJrMjNkYmpuYXB2MXpmNiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif" alt="Walking Cat">
 
-
   <script>
     /* Haupt-Countdown */
     const target = new Date("2026-08-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
 
-    /* Silvester-Countdown: 06. Dez -> 30. Dez */
-    const MEET_START = new Date("2025-12-06T00:00:00").getTime();
-    const MEET_END   = new Date("2025-12-30T00:00:00").getTime();
+    /* 1. Oben Links: Treffen (4. Jan -> 29. Jan) */
+    const MEET_START = new Date("2026-01-04T00:00:00").getTime();
+    const MEET_END   = new Date("2026-01-29T00:00:00").getTime();
+
+    /* 2. Unten Rechts: Urlaub Türkei (1. Jan -> 7. April) */
+    const VACATION_START = new Date("2026-01-01T00:00:00").getTime();
+    const VACATION_END   = new Date("2026-04-07T00:00:00").getTime();
+
+    /* 3. Oben Mitte: Jahrestag (1. Jan -> 14. Feb) */
+    const ANNIV_START = new Date("2026-01-01T00:00:00").getTime();
+    const ANNIV_END   = new Date("2026-02-14T00:00:00").getTime();
 
     const el = {
       d: document.getElementById("days"),
@@ -196,12 +221,21 @@
       f: document.getElementById("fill"),
       weekends: document.getElementById("weekendsLeft"),
       months: document.getElementById("monthsLeft"),
-      bdayLeft: document.getElementById("bdayLeft"),
-      bdayPct: document.getElementById("bdayPct"),
-      bdayArc: document.getElementById("bdayArc"),
+      
+      // Meeting (Oben Links)
       meetLeft: document.getElementById("meetLeft"),
       meetPct: document.getElementById("meetPct"),
       meetArc: document.getElementById("meetArc"),
+      
+      // Vacation (Unten Rechts - ehemals Birthday)
+      vacationLeft: document.getElementById("vacationLeft"),
+      vacationPct: document.getElementById("vacationPct"),
+      vacationArc: document.getElementById("vacationArc"),
+
+      // Anniversary (Oben Mitte)
+      annivLeft: document.getElementById("annivLeft"),
+      annivPct: document.getElementById("annivPct"),
+      annivArc: document.getElementById("annivArc"),
     };
 
     function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
@@ -250,7 +284,7 @@
       return Math.floor(diffDays / 7) + 1;
     }
 
-    /* Monate/Gehalt bis Ziel: 1. des Monats nach jetzt bis (exklusiv) 01.08.2026 */
+    /* Monate/Gehalt bis Ziel */
     function monthsRemaining(nowMs, targetMs){
       let now = new Date(nowMs);
       const targetD = new Date(targetMs);
@@ -266,33 +300,6 @@
         nextFirst = new Date(nextFirst.getFullYear(), nextFirst.getMonth() + 1, 1);
       }
       return count;
-    }
-
-    /* Birthday (13. Jan) – Zyklus 1. Aug -> 13. Jan */
-    function cycleStartEndForTarget(monthIndex0, day){
-      const now = new Date();
-      const y = now.getFullYear();
-      const aug1_y   = new Date(y, 7, 1, 0,0,0,0);
-      const target_y = new Date(y, monthIndex0, day, 0,0,0,0);
-
-      if (monthIndex0 >= 7){
-        if (now < aug1_y){
-          return { start: new Date(y-1,7,1).getTime(), end: new Date(y-1, monthIndex0, day).getTime() };
-        } else if (now <= target_y){
-          return { start: aug1_y.getTime(), end: target_y.getTime() };
-        } else {
-          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+1, monthIndex0, day).getTime() };
-        }
-      } else {
-        const target_next = new Date(y+1, monthIndex0, day, 0,0,0,0);
-        if (now < aug1_y){
-          return { start: new Date(y-1,7,1).getTime(), end: new Date(y, monthIndex0, day).getTime() };
-        } else if (now < target_next){
-          return { start: aug1_y.getTime(), end: target_next.getTime() };
-        } else {
-          return { start: new Date(y+1,7,1).getTime(), end: new Date(y+2, monthIndex0, day).getTime() };
-        }
-      }
     }
 
     function formatDHMS(ms){
@@ -327,12 +334,14 @@
       // Monatsgehälter bis Ziel
       el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
 
-      // Birthday-Ring (13. Jan)
-      const bdaySpan = cycleStartEndForTarget(0, 13);
-      updateRing(bdaySpan.start, bdaySpan.end, now, el.bdayArc, el.bdayLeft, el.bdayPct);
-
-      // Meeting-Ring: 06. Dez -> 30. Dez
+      // 1. Meeting (Oben Links)
       updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
+
+      // 2. Urlaub Türkei (Unten Rechts)
+      updateRing(VACATION_START, VACATION_END, now, el.vacationArc, el.vacationLeft, el.vacationPct);
+
+      // 3. Jahrestag (Oben Mitte)
+      updateRing(ANNIV_START, ANNIV_END, now, el.annivArc, el.annivLeft, el.annivPct);
     }
 
     /* Start */
@@ -342,7 +351,7 @@
 
 
     /* =========================================
-       NEU: Wandernde Katze Logik
+       Die wandernde Katze
        ========================================= */
     const cat = document.getElementById('wandering-cat');
     let catX = -100; // Startpositionen
@@ -353,39 +362,28 @@
       const maxX = window.innerWidth - 80;
       const maxY = window.innerHeight - 80;
 
-      // Neue zufällige Zielposition
       const nextX = Math.random() * maxX;
       const nextY = Math.random() * maxY;
 
-      // Dauer der Bewegung (zufällig zwischen 3 und 7 Sekunden für "gemütliches" Laufen)
       const duration = 3000 + Math.random() * 4000;
 
-      // Richtung bestimmen: Wenn neues X kleiner als altes X, läuft sie nach links
       if (nextX < catX) {
         cat.classList.add('facing-left');
       } else {
         cat.classList.remove('facing-left');
       }
 
-      // Geschwindigkeit der Transition anpassen
       cat.style.transitionDuration = `${duration}ms`;
-
-      // Neue Position setzen (CSS Transition übernimmt die Bewegung)
       cat.style.left = `${nextX}px`;
       cat.style.top = `${nextY}px`;
 
-      // Aktuelle Position updaten
       catX = nextX;
       catY = nextY;
 
-      // Den nächsten Spaziergang planen, wenn dieser fertig ist (+ kleine Pause)
       setTimeout(moveCatRandomly, duration + 1000 + Math.random() * 2000);
     }
-
-    // Startet die erste Bewegung nach 1 Sekunde
     setTimeout(moveCatRandomly, 1000);
 
   </script>
 </body>
 </html>
-
