@@ -76,7 +76,7 @@
     .corner.left-bottom{ bottom:14px; left:14px; }
     .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
     
-    /* NEU: Oben Mitte */
+    /* Oben Mitte (auskommentiert/gelöscht im HTML, aber die Klasse lasse ich zur Sicherheit hier) */
     .corner.top-center { 
       top: 14px; left: 50%; transform: translateX(-50%); 
       text-align: center; 
@@ -106,7 +106,7 @@
   <h1>Verbleibende Zeit</h1>
 
   <div class="corner left-top" id="meetBox">
-    <div class="title">Nächstes Treffen (29. Jan)</div>
+    <div class="title">Nächstes Treffen (05. Apr)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
@@ -116,21 +116,6 @@
       <div>
         <div class="mono" id="meetLeft">…</div>
         <div class="mono pctText" id="meetPct">0.000000%</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="corner top-center">
-    <div class="title">Erster Jahrestag (14. Feb)</div>
-    <div class="ringWrap">
-      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="annivArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
-                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
-      </svg>
-      <div>
-        <div class="mono" id="annivLeft">…</div>
-        <div class="mono pctText" id="annivPct">0.000000%</div>
       </div>
     </div>
   </div>
@@ -201,17 +186,13 @@
     const target = new Date("2026-08-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
 
-    /* 1. Oben Links: Treffen (4. Jan -> 29. Jan) */
-    const MEET_START = new Date("2026-01-04T00:00:00").getTime();
-    const MEET_END   = new Date("2026-01-29T00:00:00").getTime();
+    /* 1. Oben Links: Treffen (3. Apr -> 5. Apr) */
+    const MEET_START = new Date("2026-04-03T00:00:00").getTime();
+    const MEET_END   = new Date("2026-04-05T00:00:00").getTime();
 
     /* 2. Unten Rechts: Urlaub Türkei (1. Jan -> 7. April) */
     const VACATION_START = new Date("2026-01-01T00:00:00").getTime();
     const VACATION_END   = new Date("2026-04-07T00:00:00").getTime();
-
-    /* 3. Oben Mitte: Jahrestag (1. Jan -> 14. Feb) */
-    const ANNIV_START = new Date("2026-01-01T00:00:00").getTime();
-    const ANNIV_END   = new Date("2026-02-14T00:00:00").getTime();
 
     const el = {
       d: document.getElementById("days"),
@@ -227,15 +208,10 @@
       meetPct: document.getElementById("meetPct"),
       meetArc: document.getElementById("meetArc"),
       
-      // Vacation (Unten Rechts - ehemals Birthday)
+      // Vacation (Unten Rechts)
       vacationLeft: document.getElementById("vacationLeft"),
       vacationPct: document.getElementById("vacationPct"),
       vacationArc: document.getElementById("vacationArc"),
-
-      // Anniversary (Oben Mitte)
-      annivLeft: document.getElementById("annivLeft"),
-      annivPct: document.getElementById("annivPct"),
-      annivArc: document.getElementById("annivArc"),
     };
 
     function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
@@ -339,9 +315,6 @@
 
       // 2. Urlaub Türkei (Unten Rechts)
       updateRing(VACATION_START, VACATION_END, now, el.vacationArc, el.vacationLeft, el.vacationPct);
-
-      // 3. Jahrestag (Oben Mitte)
-      updateRing(ANNIV_START, ANNIV_END, now, el.annivArc, el.annivLeft, el.annivPct);
     }
 
     /* Start */
@@ -387,5 +360,3 @@
   </script>
 </body>
 </html>
-
-
