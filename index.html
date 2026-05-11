@@ -75,12 +75,6 @@
     .corner.right-top{ top:14px; right:14px; text-align:right; }
     .corner.left-bottom{ bottom:14px; left:14px; }
     .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
-    
-    /* Oben Mitte (auskommentiert/gelöscht im HTML, aber die Klasse lasse ich zur Sicherheit hier) */
-    .corner.top-center { 
-      top: 14px; left: 50%; transform: translateX(-50%); 
-      text-align: center; 
-    }
 
     .mono{ font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
 
@@ -106,7 +100,7 @@
   <h1>Verbleibende Zeit</h1>
 
   <div class="corner left-top" id="meetBox">
-    <div class="title">Nächstes Treffen (05. Apr)</div>
+    <div class="title">Nächstes Treffen (02. Jun)</div>
     <div class="ringWrap">
       <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
@@ -128,21 +122,6 @@
   <div class="corner left-bottom">
     <div class="title">Monatsgehälter bis Ziel</div>
     <div class="mono" id="monthsLeft">…</div>
-  </div>
-
-  <div class="corner right-bottom">
-    <div class="title">Gemeinsamer Urlaub (Türkei)</div>
-    <div class="ringWrap">
-      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="vacationArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
-                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
-      </svg>
-      <div>
-        <div class="mono" id="vacationLeft">…</div>
-        <div class="mono pctText" id="vacationPct">0.000000%</div>
-      </div>
-    </div>
   </div>
 
   <div class="clock" aria-label="Flip Clock Countdown">
@@ -186,13 +165,9 @@
     const target = new Date("2026-08-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
 
-    /* 1. Oben Links: Treffen (3. Apr -> 5. Apr) */
-    const MEET_START = new Date("2026-03-03T00:00:00").getTime();
-    const MEET_END   = new Date("2026-04-05T00:00:00").getTime();
-
-    /* 2. Unten Rechts: Urlaub Türkei (1. Jan -> 7. April) */
-    const VACATION_START = new Date("2026-01-01T00:00:00").getTime();
-    const VACATION_END   = new Date("2026-04-07T00:00:00").getTime();
+    /* 1. Oben Links: Treffen (10. Apr -> 02. Jun) */
+    const MEET_START = new Date("2026-04-10T00:00:00").getTime();
+    const MEET_END   = new Date("2026-06-02T00:00:00").getTime();
 
     const el = {
       d: document.getElementById("days"),
@@ -207,11 +182,6 @@
       meetLeft: document.getElementById("meetLeft"),
       meetPct: document.getElementById("meetPct"),
       meetArc: document.getElementById("meetArc"),
-      
-      // Vacation (Unten Rechts)
-      vacationLeft: document.getElementById("vacationLeft"),
-      vacationPct: document.getElementById("vacationPct"),
-      vacationArc: document.getElementById("vacationArc"),
     };
 
     function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
@@ -312,9 +282,6 @@
 
       // 1. Meeting (Oben Links)
       updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
-
-      // 2. Urlaub Türkei (Unten Rechts)
-      updateRing(VACATION_START, VACATION_END, now, el.vacationArc, el.vacationLeft, el.vacationPct);
     }
 
     /* Start */
@@ -324,7 +291,7 @@
 
 
     /* =========================================
-       Die wandernde Katze12
+       Die wandernde Katze
        ========================================= */
     const cat = document.getElementById('wandering-cat');
     let catX = -100; // Startpositionen
