@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>Countdown bis 1. August 2026</title>
+  <title>Countdown bis 1. Oktober 2026</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
@@ -62,27 +62,6 @@
     .fill{ height:100%; width:0%; background: linear-gradient(180deg, #ffe0b8, #e2b487); color:#1a1a1a; text-align:center; font-size:12px; font-weight:900; line-height:22px; transition: width .2s linear; white-space: nowrap; }
     .foot{ font-size:12px; color:#6a4633; opacity:.85; }
 
-    /* Corner Cards */
-    .corner{
-      position: fixed; z-index: 5; background: #ffffffcc; color:#1a0f10;
-      border:1px solid #e7b9c9; border-radius:12px; padding:10px 12px; backdrop-filter: blur(4px);
-      box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size:13px; line-height:1.25;
-    }
-    .corner .title{ font-weight:800; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin-bottom:6px; font-size:11px; }
-    
-    /* Positionierungen */
-    .corner.left-top{ top:14px; left:14px; }
-    .corner.right-top{ top:14px; right:14px; text-align:right; }
-    .corner.left-bottom{ bottom:14px; left:14px; }
-    .corner.right-bottom{ bottom:14px; right:14px; text-align:right; }
-
-    .mono{ font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-
-    /* Circular progress */
-    .ringWrap{ display:flex; align-items:center; gap:10px; }
-    .ring{ width:64px; height:64px; transform: rotate(-90deg); } /* Start oben */
-    .pctText{ font-weight:800; font-size:12px; }
-
     /* Die wandernde Katze */
     #wandering-cat {
       position: fixed;
@@ -99,31 +78,7 @@
 <body>
   <h1>Verbleibende Zeit</h1>
 
-  <div class="corner left-top" id="meetBox">
-    <div class="title">Nächstes Treffen (02. Jun)</div>
-    <div class="ringWrap">
-      <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-        <circle cx="60" cy="60" r="52" stroke="var(--ring-bg)" stroke-width="12" fill="none"/>
-        <circle id="meetArc" cx="60" cy="60" r="52" stroke="var(--ring-fg)" stroke-width="12" stroke-linecap="round" fill="none"
-                stroke-dasharray="326.7256" stroke-dashoffset="326.7256"/>
-      </svg>
-      <div>
-        <div class="mono" id="meetLeft">…</div>
-        <div class="mono pctText" id="meetPct">0.000000%</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="corner right-top">
-    <div class="title">Wochenenden bis zum Ziel</div>
-    <div class="mono" id="weekendsLeft">…</div>
-  </div>
-
-  <div class="corner left-bottom">
-    <div class="title">Monatsgehälter bis Ziel</div>
-    <div class="mono" id="monthsLeft">…</div>
-  </div>
-
+  <!-- Haupt-Flip-Clock -->
   <div class="clock" aria-label="Flip Clock Countdown">
     <div class="unit">
       <div class="card"><span id="days" class="num">000</span></div>
@@ -149,7 +104,7 @@
   <div class="progress-wrap">
     <div class="progress-head">
       <div>Schon geschafft seit dem <strong>01.08.2025</strong></div>
-      <div>Ziel: <strong>01.08.2026</strong></div>
+      <div>Ziel: <strong>01.10.2026</strong></div>
     </div>
     <div class="bar" aria-label="Fortschritt">
       <div id="fill" class="fill">0.000000%</div>
@@ -162,26 +117,15 @@
 
   <script>
     /* Haupt-Countdown */
-    const target = new Date("2026-08-01T00:00:00").getTime();
+    const target = new Date("2026-10-01T00:00:00").getTime();
     const start  = new Date("2025-08-01T00:00:00").getTime();
-
-    /* 1. Oben Links: Treffen (10. Apr -> 02. Jun) */
-    const MEET_START = new Date("2026-05-10T00:00:00").getTime();
-    const MEET_END   = new Date("2026-06-02T00:00:00").getTime();
 
     const el = {
       d: document.getElementById("days"),
       h: document.getElementById("hours"),
       m: document.getElementById("minutes"),
       s: document.getElementById("seconds"),
-      f: document.getElementById("fill"),
-      weekends: document.getElementById("weekendsLeft"),
-      months: document.getElementById("monthsLeft"),
-      
-      // Meeting (Oben Links)
-      meetLeft: document.getElementById("meetLeft"),
-      meetPct: document.getElementById("meetPct"),
-      meetArc: document.getElementById("meetArc"),
+      f: document.getElementById("fill")
     };
 
     function pad(n, len){ return String(Math.max(0, n)).padStart(len, "0"); }
@@ -216,79 +160,9 @@
       requestAnimationFrame(updateProgress);
     }
 
-    /* Wochenenden (Samstag als Marker) */
-    function weekendsRemaining(nowMs, targetMs){
-      const msDay = 86400000;
-      let d = new Date(nowMs); d.setHours(0,0,0,0);
-      const end = new Date(targetMs); end.setHours(0,0,0,0);
-      if (end <= d) return 0;
-      const dow = d.getDay(); // 0=So..6=Sa
-      const daysToSat = (6 - dow + 7) % 7;
-      const firstSat = new Date(d.getTime() + daysToSat * msDay);
-      if (firstSat > end) return 0;
-      const diffDays = Math.floor((end - firstSat) / msDay);
-      return Math.floor(diffDays / 7) + 1;
-    }
-
-    /* Monate/Gehalt bis Ziel */
-    function monthsRemaining(nowMs, targetMs){
-      let now = new Date(nowMs);
-      const targetD = new Date(targetMs);
-      now.setHours(0,0,0,0);
-      const firstThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      let nextFirst = firstThisMonth;
-      if (now.getTime() >= firstThisMonth.getTime()) {
-        nextFirst = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      }
-      let count = 0;
-      while (nextFirst < targetD) {
-        count++;
-        nextFirst = new Date(nextFirst.getFullYear(), nextFirst.getMonth() + 1, 1);
-      }
-      return count;
-    }
-
-    function formatDHMS(ms){
-      if (ms < 0) ms = 0;
-      const d = Math.floor(ms / 86400000); ms %= 86400000;
-      const h = Math.floor(ms / 3600000);  ms %= 3600000;
-      const m = Math.floor(ms / 60000);    ms %= 60000;
-      const s = Math.floor(ms / 1000);
-      return `${pad(d,2)}d ${pad(h,2)}h ${pad(m,2)}m ${pad(s,2)}s`;
-    }
-
-    const ARC_LEN = 2*Math.PI*52; // r=52
-    function updateRing(startMs, endMs, nowMs, arcEl, leftEl, pctEl){
-      const span = Math.max(1, endMs - startMs);
-      let done = nowMs - startMs; if (done < 0) done = 0; if (done > span) done = span;
-      const pct = (done / span) * 100;
-
-      const offset = ARC_LEN * (1 - done / span);
-      arcEl.style.strokeDasharray = ARC_LEN.toString();
-      arcEl.style.strokeDashoffset = offset.toString();
-
-      pctEl.textContent = pct.toFixed(6) + "%";
-      leftEl.textContent = "noch: " + formatDHMS(endMs - nowMs);
-    }
-
-    function updateCorners(){
-      const now = Date.now();
-
-      // Wochenenden bis Ziel
-      el.weekends.textContent = `Noch ${weekendsRemaining(now, target)} Wochenenden`;
-
-      // Monatsgehälter bis Ziel
-      el.months.textContent = `Noch ${monthsRemaining(now, target)} mal`;
-
-      // 1. Meeting (Oben Links)
-      updateRing(MEET_START, MEET_END, now, el.meetArc, el.meetLeft, el.meetPct);
-    }
-
     /* Start */
     updateClock(); setInterval(updateClock, 1000);
     requestAnimationFrame(updateProgress);
-    updateCorners(); setInterval(updateCorners, 1000);
-
 
     /* =========================================
        Die wandernde Katze
